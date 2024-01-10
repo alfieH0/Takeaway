@@ -31,16 +31,13 @@ int main()
 	string userCommand;
 	vector <string> parameters;
 
-	// Create a menu object from a CSV file
-	Menu menu = Menu("menu.csv");
-
-	// Create an order object
-	Order order = Order();
+	Menu menu = Menu("menu.csv");	//Create a menu object from a CSV file
+	
+	Order order = Order();	//Create an order object
 
 	while (userCommand != "exit")
 	{
 		getline(cin, userCommand);
-		stringstream ss(userCommand);  // Add this line to create stringstream
 		char* cstr = new char[userCommand.length() + 1];
 		strcpy(cstr, userCommand.c_str());
 
@@ -52,59 +49,93 @@ int main()
 			parameters.push_back(token);
 			token = strtok(NULL, " ");
 		}
+		
+		if (!parameters.empty()) {
+			string command = parameters[0];
 
-		string command = parameters[0];
 
-		if (command.compare("menu") == 0) {
-			cout << menu.toString();
-		}
-		else if (command.compare("add") == 0) {
-			size_t itemNumber;
-			if (parameters.size() > 1) {
-				ss >> itemNumber;
-				// Check if the item number is valid
-				if (itemNumber > 0 && itemNumber <= menu.size()) {
-					// Get the item type and add it to the order
-					std::unique_ptr<Item> choice = menu.getMenuItem(itemNumber);
-					order.add(choice.get());  // Pass the raw pointer
+			if (command.compare("menu") == 0) 
+			{
+				cout << menu.toString();
+			}
+			else if (command.compare("add") == 0)
+			{
+				size_t itemNumber;
 
+				cout << "Enter the item number to add to the order: ";
+
+				if (cin >> itemNumber) 
+				{
+					if (itemNumber > 0 && itemNumber <= menu.size()) 
+					{
+						
+						shared_ptr<Item> choice = menu.getMenuItem(itemNumber);		//Get the item type and add it to the order
+						order.add(choice);
+					}
+					else 
+					{
+						cerr << "Invalid item number. Please choose a valid item.\n";
+					}
+				}
+				else 
+				{
+					cerr << "Invalid input. Please enter a valid item number.\n";
+					
+					cin.clear();		//Clear the input stream in case of non-numeric input
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				}
+			}
+
+			else if (command.compare("remove") == 0) {
+				size_t itemNumberToRemove;
+
+				cout << "Enter the item number to remove from the order: ";
+				if (cin >> itemNumberToRemove) {
+					order.remove(itemNumberToRemove);
 				}
 				else {
-					cerr << "Invalid item number. Please choose a valid item.\n";
+					cerr << "Invalid input. Please enter a valid item number.\n";
+					cin.clear();					//Clear the input stream in case of non-numeric input
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 				}
 			}
-			else {
-				cerr << "Please provide an item number to add.\n";
+
+			else if (command.compare("checkout") == 0)
+			{
+				
+				cout << order.toString();		//Display the order details and total
+
+				
+				cout << "Do you want to print a receipt? (y/n): ";		//Ask the user if they want a receipt printed
+				string printReceipt;
+				cin >> printReceipt;
+
+				if (printReceipt == "y" || printReceipt == "Y")
+				{
+					
+					order.printReceipt();		//Write the receipt to a file
+				}
+				else
+				{
+					cout << "Receipt not printed.\n";
+				}
 			}
-		}
-		else if (command.compare("remove") == 0)
-		{
-			// Remove the item from the order
-			order.remove(1);
-		}
-		else if (command.compare("checkout") == 0)
-		{
-			// Display the order details and total
-			cout << order.toString();
 
-			// Write the receipt to a file
-			order.printReceipt();
-		}
-		else if (command.compare("help") == 0)
-		{
-			// Display help information
-			cout << "Available commands:\n";
-			cout << "  menu - Display the menu\n";
-			cout << "  add - Add an item to the order\n";
-			cout << "  remove - Remove an item from the order\n";
-			cout << "  checkout - View and finalize the order\n";
-			cout << "  help - Display available commands\n";
-		}
+			else if (command.compare("help") == 0)		//Display help information
+			{
+				
+				cout << "Available commands:\n";
+				cout << "  menu - Display the menu\n";
+				cout << "  add - Add an item to the order\n";
+				cout << "  remove - Remove an item from the order\n";
+				cout << "  checkout - View and finalize the order\n";
+				cout << "  help - Display available commands\n";
+			}
 
-		parameters.clear();
+			parameters.clear();
 
+		}
 	}
-
 	cout << "Press any key to quit...";
 	getchar();
 

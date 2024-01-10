@@ -1,149 +1,135 @@
-// Order.cpp
-
 #include "Order.h"
 #include "Item.h"
 #include "Appetiser.h"
 #include <iostream>
 #include <fstream>
 #include <memory>
-
+#include <algorithm>
+#include <iomanip>
+#include <sstream> 
 
 using namespace std;
 
-// Constructor implementation
-Order::Order() : total(0.0) 
+Order::Order() 
 {
-    // Initialize total to zero when the order is created
+   
 }
 
-// Destructor implementation
 Order::~Order() 
 {
-    // Order destructor can handle any additional cleanup if needed
+    
 }
 
-// Function to calculate the total cost of items in the order, considering discounts
-void Order::calculateTotal()
+void Order::calculateDiscount()
 {
-    total = 0.0;
-    size_t appetiserCount = 0; // To count the number of eligible appetisers for discount
+    savings = 0.0;  
 
-    for (const auto& item : items) 
+    size_t eligibleAppetiserCount = count_if(items.begin(), items.end(), [](const shared_ptr<Item>& item) //Checks for two-for-one discount
     {
-        total += item->getPrice();
-
-        // Check if the item is an eligible appetiser for the "2-4-1" discount
-        if (auto appetiser = dynamic_cast<const Appetiser*>(item.get())) 
+        if (const auto appetiser = dynamic_pointer_cast<const Appetiser>(item)) 
         {
-            if (appetiser->twoForOne) 
+            return appetiser->twoForOne;
+        }
+        return false;
+    });
+
+    if (eligibleAppetiserCount >= 2) 
+    {
+        
+        size_t discountPairs = eligibleAppetiserCount / 2;      //Apply two-for-one discount for every pair of eligible appetisers
+
+       
+        double cheapestPrice = numeric_limits<double>::max(); //Find the price of the cheapest eligible appetiser
+        for (const auto& item : items)
+        {
+            if (const auto appetiser = dynamic_pointer_cast<const Appetiser>(item)) 
             {
-                appetiserCount++;
+                if (appetiser->twoForOne && appetiser->getPrice() < cheapestPrice) 
+                {
+                    cheapestPrice = appetiser->getPrice();
+                }
             }
         }
+        savings = discountPairs * cheapestPrice;
     }
-
-    // Apply "2-4-1" discount for eligible appetizers
-    int discountCount = appetiserCount / 2;
-    total -= discountCount * items.front()->getPrice(); // Assuming all eligible appetizers have the same price
 }
 
-// Function to print the receipt
-void Order::printReceipt() const 
-{
-    ofstream outFile("receipt.txt");  // Create a new file for writing
 
-    if (outFile.is_open()) 
+
+
+void Order::calculateTotal()        //Function to calculate the total cost of items in the order
+{
+    total = 0.0;
+    size_t appetiserCount;
+
+    for (const auto& item : items)
+    {
+        total += item->getPrice();
+    }
+
+    calculateDiscount();
+    total -= savings;
+}
+
+void Order::printReceipt() const        //Function to print the receipt
+{
+    ofstream outFile("receipt.txt");     //Create a new file for recept
+
+    if (outFile.is_open())
     {
         outFile << "Receipt:\n";
-
-        // Write each item to the file
-        for (const auto& item : items) 
+       
+        for (const auto& item : items)  //Write each item to the file
         {
             outFile << "- " << item->toString() << "\n";
         }
 
-        // Display and write total price to the file
-        outFile << "\nTotal: $" << total << "\n";
+        outFile << "\nTotal: \x9C" << total << "\n";        //Display and write total price to the file
+        outFile << "Savings: \x9C" << savings << "\n";         //Display and write savings to the file
 
-        // Calculate and display savings made by two-for-one discount
-        size_t appetiserCount = 0;
-        for (const auto& item : items) 
-        {
-            if (auto appetiser = dynamic_cast<const Appetiser*>(item.get())) 
-            {
-                if (appetiser->twoForOne) 
-                {
-                    appetiserCount++;
-                }
-            }
-        }
-
-        int discountCount = appetiserCount / 2;
-        double savings = discountCount * items.front()->getPrice(); // Assuming all eligible appetizers have the same price
-
-        // Display and write savings to the file
-        outFile << "Savings: $" << savings << "\n";
-
-        outFile.close();  // Close the file
+        outFile.close();  //Close the file
         cout << "Receipt written to receipt.txt.\n";
-    }
-    else 
-    {
-        cerr << "Error: Unable to create receipt.txt for writing.\n";
     }
 }
 
-// Function to display the order
-string Order::toString() const 
+string Order::toString() const          //Function to display the order
 {
     string result;
     result += "Order:\n";
-    for (const auto& item : items) 
+    for (const auto& item : items)
     {
         result += "- " + item->toString() + "\n";
     }
 
-    // Display total price
-    result += "\nTotal Price: £" + to_string(total) + "\n";
-
-    // Calculate and display savings made by two-for-one discount
-    size_t appetiserCount = 0;
-    for (const auto& item : items) 
-    {
-        if (auto appetiser = dynamic_cast<const Appetiser*>(item.get())) 
-        {
-            if (appetiser->twoForOne) 
-            {
-                appetiserCount++;
-            }
-        }
-    }
-
-    int discountCount = appetiserCount / 2;
-    double savings = discountCount * items.front()->getPrice(); // Assuming all eligible appetizers have the same price
-
-    result += "Savings: £" + to_string(savings) + "\n";
+    result += "\nTotal Price: \x9C" + formatTo2DP(total) + "\n";
+    result += "Savings: \x9C" + formatTo2DP(savings) + "\n";
 
     return result;
 }
 
-// Function to add an item to the order by position in the item list
-void Order::add(const Item* item) {
-    items.push_back(std::make_unique<Item>(*item));
-    calculateTotal();
-    cout << "Item added to the order. New total: £" << total << "\n";
+string Order::formatTo2DP(double value) const 
+{
+    ostringstream formattedValue;
+    formattedValue << fixed << setprecision(2) << value;
+    return formattedValue.str();
 }
 
+void Order::add(shared_ptr<Item> item) {
+    items.push_back(item);
+    calculateTotal();
 
+    size_t itemNumber = items.size();  //Get the corresponding number for the added item
+    cout << "Added #" << itemNumber << " " << item->getName() << " to the order. New total: \x9C" << total << "\n";    //Display the item number and name
 
-// Function to remove an item from the order by position in the item list
+}
+
 void Order::remove(size_t position) {
     if (position > 0 && position <= items.size()) {
         items.erase(items.begin() + position - 1);
         calculateTotal();
-        std::cout << "Item removed from the order. New total: £" << total << "\n";
+        cout << "Item #" << position << " removed from the order. New total: \x9C" << total << "\n";
     }
     else {
-        std::cerr << "Invalid position. Unable to remove item from the order.\n";
+        cerr << "Invalid position. Unable to remove item from the order.\n";
     }
 }

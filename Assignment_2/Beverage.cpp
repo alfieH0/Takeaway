@@ -1,37 +1,42 @@
-// Beverage.cpp
-
 #include "Beverage.h"
 #include <string>
 #include <memory>
-
+#include <iomanip>
+#include <sstream> 
 using namespace std;
 
-// Constructor implementation
-Beverage::Beverage(const string& name, int calories, double price, double abv, double volume)
-    : Item(name, calories, price), abv(abv), volume(volume) {
-    // Additional initialization if needed
+Beverage::Beverage(const string& name, int calories, double price, double abv, int volume): Item(name, calories, price), abv(abv), volume(volume) 
+{
+
 }
 
-// isAlcoholic method implementation
-bool Beverage::isAlcoholic() const {
+bool Beverage::isAlcoholic() const 
+{
     return abv > 0.0;
 }
 
-// toString method implementation
-string Beverage::toString() const {
-    // Convert isAlcoholic to string for display
-    string isAlcoholicStr = isAlcoholic() ? "Yes" : "No";
+string Beverage::toString() const 
+{
+    string isAlcoholicStr = isAlcoholic() ? "Yes" : "No";    //Convert isAlcoholic to string for display
 
-    // Create a string representation of the beverage
+
+    //Create a string representation of the beverage
     string result = "Beverage: " + name + "\n";
-    result += "Price: $" + to_string(price) + "\n";
-    result += "Alcohol by Volume (ABV): " + to_string(abv) + "%\n";
-    result += "Volume: " + to_string(volume) + " mL\n";
+    ostringstream formattedPrice;
+    formattedPrice << fixed << setprecision(2) << getPrice();
+    result += "Price: \x9C" + formattedPrice.str() + "\n";
+    ostringstream formattedAbv;
+    formattedAbv << fixed << setprecision(2) << abv;
+    result += "Alcohol by Volume (ABV): " + formattedAbv.str() + "%\n";
+    ostringstream formattedVolume;
+    formattedVolume << fixed << setprecision(2) << volume;
+    result += "Volume: " + formattedVolume.str() + " ml\n";
     result += "Is Alcoholic: " + isAlcoholicStr + "\n";
 
     return result;
 }
 
-Beverage::~Beverage() {
-    // No additional cleanup needed for now
+Beverage::~Beverage() 
+{
+
 }

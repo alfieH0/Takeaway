@@ -3,27 +3,25 @@
 #include <cstring>
 #include <string>
 #include <memory>
-
+#include <iomanip>
+#include <sstream> 
 using namespace std;
 
-// Constructor implementation
-Item::Item(const string& name, int calories, double price)
-    : name(name), calories(calories), price(price) {
-    // No need for dynamic memory allocation for name
+Item::Item(const string& name, int calories, double price): name(name), calories(calories), price(price) {
 }
 
-// Destructor implementation
-Item::~Item() {
-    // Clean up dynamically allocated memory
+Item::~Item() 
+{
 
 }
 
 string Item::toString() const
 {
-    // Create a string representation of the item
     string result = "Item: " + getName() + "\n";
     result += "Calories: " + to_string(getCalories()) + "\n";
-    result += "Price: $" + to_string(getPrice()) + "\n";
+    ostringstream formattedPrice;
+    formattedPrice << fixed << setprecision(2) << getPrice();
+    result += "Price: \x9C" + formattedPrice.str() + "\n";
 
     return result;
 }

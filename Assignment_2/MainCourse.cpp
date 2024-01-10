@@ -1,27 +1,26 @@
-// MainCourse.cpp
-
 #include "MainCourse.h"
 #include <string>
 #include <memory>
-
+#include <iomanip>
+#include <sstream> 
 using namespace std;
 
-// Constructor implementation
-MainCourse::MainCourse(const string& name, int calories, double price)
-    : Item(name, calories, price) {
-    // Additional initialization if needed
+MainCourse::MainCourse(const string& name, int calories, double price): Item(name, calories, price) 
+{
+
 }
 
-// toString method implementation
-string MainCourse::toString() const {
-
-    // Create a string representation of the main course
+string MainCourse::toString() const 
+{
     string result = "Main Course: " + name + "\n";
-    result += "Price: $" + to_string(price) + "\n";
+    ostringstream formattedPrice;
+    formattedPrice << fixed << setprecision(2) << getPrice();
+    result += "Price: $" + formattedPrice.str() + "\n";
 
     return result;
 }
 
-MainCourse::~MainCourse() {
-    // No additional cleanup needed for now
+MainCourse::~MainCourse() 
+{
+    
 }

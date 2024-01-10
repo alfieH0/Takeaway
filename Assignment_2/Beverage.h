@@ -1,5 +1,3 @@
-// Beverage.h
-
 #ifndef BEVERAGE_H
 #define BEVERAGE_H
 
@@ -8,22 +6,17 @@
 
 using namespace std;
 
-class Beverage : public Item {
+class Beverage : public Item 
+{
 private:
-    double abv;     // Alcohol by Volume
-    double volume;  // Volume in mL
 
 public:
-    // Constructor
-    Beverage(const string& name, int calories, double price, double abv, double volume);
-
-    // Method to check if the beverage is alcoholic
+    Beverage(const string& name, int calories, double price, double abv, int volume);   //Constructor
     bool isAlcoholic() const;
-
-    // toString method
+    double abv;     //Alcohol by Volume
+    double volume;  //Volume in mL
     string toString() const;
-
     ~Beverage();
 };
 
-#endif // BEVERAGE_H
+#endif

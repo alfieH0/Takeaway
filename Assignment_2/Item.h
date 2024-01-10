@@ -5,23 +5,19 @@
 #include <memory>
 
 using namespace std;
-class Item {
+class Item 
+{
 protected:
     string name;
-    int calories;  // Adding calories member
+    int calories;  
     double price;
 
 public:
-    // Constructor
-    Item(const string& name, int calories, double price);
-
-    // Destructor
-    ~Item();
-
-    // Public accessors for name, calories, and price
+    Item(const string& name, int calories, double price);    //Constructor
+    ~Item();    // Destructor
     const string& getName() const { return name; }
     int getCalories() const { return calories; }
     double getPrice() const { return price; }
     virtual string toString() const;
 };
-#endif // ITEM_H
+#endif

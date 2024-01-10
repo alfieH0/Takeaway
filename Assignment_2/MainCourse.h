@@ -1,5 +1,3 @@
-// MainCourse.h
-
 #ifndef MAIN_COURSE_H
 #define MAIN_COURSE_H
 
@@ -11,12 +9,9 @@ using namespace std;
 class MainCourse : public Item 
 {
 public:
-    // Constructor
-    MainCourse(const string& name, int calories, double price);
-
-    // toString method
+    MainCourse(const string& name, int calories, double price);    //Constructor
     string toString() const;
     ~MainCourse();
 };
 
-#endif // MAIN_COURSE_H
+#endif

@@ -2,24 +2,19 @@
 #define ITEMLIST_H
 
 #include <vector>
-#include <memory>  // Include for smart pointers (unique_ptr)
-#include<string>
-#include <stdexcept>
+#include <memory>
+#include <string>
 
 using namespace std;
+class Item;  //Forward declaration
 
-class Item;  // Forward declaration
-
-class ItemList {
+class ItemList 
+{
 protected:
-     vector<unique_ptr<Item>> items;  // Vector of smart pointers to Item objects
+    vector<shared_ptr<Item>> items;  //Vector of smart pointers to Item objects
 
 public:
-    virtual ~ItemList() = default;  // Virtual destructor
-
-   
-    
-    // Pure virtual function for the toString method
+    virtual ~ItemList() = default;  //Virtual destructor
     virtual string toString() const = 0;
 
     virtual size_t size() const 
@@ -27,12 +22,14 @@ public:
         return items.size();
     }
 
-    virtual const Item* getItemByPosition(size_t position) const {
-        if (position > 0 && position <= items.size()) {
+    virtual const Item* getItemByPosition(size_t position) const 
+    {
+        if (position > 0 && position <= items.size()) 
+        {
             return items[position - 1].get();
         }
         return nullptr;
     }
 };
 
-#endif // ITEMLIST_H
+#endif
