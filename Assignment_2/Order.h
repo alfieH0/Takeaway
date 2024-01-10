@@ -13,7 +13,7 @@ private:
     double total;
     double savings;
     string formatTo2DP(double value) const;
-
+    void calculateDiscount();
 public:
     Order();
     ~Order();
@@ -22,6 +22,6 @@ public:
     string toString() const override;
     void add(shared_ptr<Item> item);
     void remove(size_t position);
-    void calculateDiscount();
+  
 };
 #endif

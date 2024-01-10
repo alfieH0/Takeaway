@@ -1,19 +1,12 @@
 Receipt:
 - Appetiser: Nachos
-Price: $4.99
+Price: œ4.99
 Shareable: Yes
 Two For One: No
 
-- Appetiser: Buffalo wings
-Price: $3.99
-Shareable: No
-Two For One: Yes
-
-- Appetiser: Buffalo wings
-Price: $3.99
-Shareable: No
-Two For One: Yes
+- Main Course: Burger
+Price: $9.99
 
 
-Total: œ8.98
-Savings: œ3.99
+Total: œ14.98
+Savings: œ0
