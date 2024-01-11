@@ -4,19 +4,18 @@
 #include "Item.h"
 #include <memory>
 
-using namespace std;
-
-class Beverage : public Item 
+class Beverage : public Item
 {
-private:
-
 public:
-    Beverage(const string& name, int calories, double price, double abv, int volume);   //Constructor
-    bool isAlcoholic() const;
-    double abv;     //Alcohol by Volume
-    double volume;  //Volume in mL
-    string toString() const;
-    ~Beverage();
+    Beverage(const string& name, int calories, double price, double abv, int volume);    //Constructor for the Beverage class
+
+    bool isAlcoholic() const;   //Checks if the beverage is alcoholic
+    double abv;                 //Alcohol by Volume
+    double volume;              //Volume in mL
+    string toString() const;    //Convert Beverage object to a string for display
+
+    ~Beverage();    //Destructor for the Beverage class
+
 };
 
 #endif

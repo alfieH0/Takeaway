@@ -6,12 +6,12 @@
 
 using namespace std;
 
-class MainCourse : public Item 
+class MainCourse : public Item
 {
 public:
-    MainCourse(const string& name, int calories, double price);    //Constructor
-    string toString() const;
-    ~MainCourse();
+    MainCourse(const string& name, int calories, double price);    //Constructor for the MainCourse class
+    string toString() const;    //Convert MainCourse object to a string for display
+    ~MainCourse();    //Destructor for the MainCourse class
 };
 
 #endif

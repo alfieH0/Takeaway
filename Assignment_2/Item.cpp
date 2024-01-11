@@ -5,18 +5,18 @@
 #include <memory>
 #include <iomanip>
 #include <sstream> 
+
 using namespace std;
 
-Item::Item(const string& name, int calories, double price): name(name), calories(calories), price(price) {
-}
+Item::Item(const string& name, int calories, double price) : name(name), calories(calories), price(price) //Constructor for the Item class
+{}
 
-Item::~Item() 
+Item::~Item()//Destructor for the Item class
+{}
+
+string Item::toString() const//Convert Item object to a string for display
 {
-
-}
-
-string Item::toString() const
-{
+    //Build the string representation of the Item object
     string result = "Item: " + getName() + "\n";
     result += "Calories: " + to_string(getCalories()) + "\n";
     ostringstream formattedPrice;

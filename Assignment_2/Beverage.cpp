@@ -3,22 +3,24 @@
 #include <memory>
 #include <iomanip>
 #include <sstream> 
+
 using namespace std;
 
-Beverage::Beverage(const string& name, int calories, double price, double abv, int volume): Item(name, calories, price), abv(abv), volume(volume) 
+//Constructor for the Beverage class
+Beverage::Beverage(const string& name, int calories, double price, double abv, int volume) : Item(name, calories, price), abv(abv), volume(volume)
 {
 
 }
 
-bool Beverage::isAlcoholic() const 
+bool Beverage::isAlcoholic() const      //Check if the beverage is alcoholic based on Alcohol by Volume (ABV)
 {
     return abv > 0.0;
 }
 
-string Beverage::toString() const 
+
+string Beverage::toString() const       //Convert Beverage object to a string for display
 {
     string isAlcoholicStr = isAlcoholic() ? "Yes" : "No";    //Convert isAlcoholic to string for display
-
 
     //Create a string representation of the beverage
     string result = "Beverage: " + name + "\n";
@@ -36,7 +38,7 @@ string Beverage::toString() const
     return result;
 }
 
-Beverage::~Beverage() 
+Beverage::~Beverage()       //Destructor for the Beverage class
 {
 
 }

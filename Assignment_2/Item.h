@@ -5,19 +5,24 @@
 #include <memory>
 
 using namespace std;
-class Item 
+
+class Item
 {
 protected:
     string name;
-    int calories;  
+    int calories;
     double price;
 
 public:
-    Item(const string& name, int calories, double price);    //Constructor
-    ~Item();    // Destructor
-    const string& getName() const { return name; }
-    int getCalories() const { return calories; }
-    double getPrice() const { return price; }
-    virtual string toString() const;
+    Item(const string& name, int calories, double price);    //Constructor for the Item class
+
+    ~Item();    //Destructor for the Item class
+
+    const string& getName() const { return name; }    //Get the name of the item
+    int getCalories() const { return calories; }      //Get the calories of the item
+    double getPrice() const { return price; }         //Get the price of the item
+    virtual string toString() const;                  //Convert Item object to a string for display
+
 };
+
 #endif

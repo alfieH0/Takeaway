@@ -10,18 +10,15 @@
 #include <iomanip>
 using namespace std;
 
-
-Menu::Menu(const string& filePath)      //Constructor implementation
+Menu::Menu(const string& filePath) //Constructor implementation for the Menu class
 {
     loadMenuFromFile(filePath);
 }
 
-Menu::~Menu() //Destructor implementation
-{
-    
-}
+Menu::~Menu() //Destructor implementation for the Menu class
+{}
 
-// Function to load the menu from a file
+//Function to load the menu from a file
 void Menu::loadMenuFromFile(const string& filePath) 
 {
     ifstream file(filePath);
@@ -34,21 +31,20 @@ void Menu::loadMenuFromFile(const string& filePath)
     string line;
     while (getline(file, line)) 
     {
-        try 
+		try            //kept getting an error here so added a try catch and that fixed it somehow dont remove 
         {
             istringstream iss(line);
             char itemType;
             iss >> itemType;
 
-            vector<string> itemData;        //Extract data from the rest of the line
+            vector<string> itemData;    //Extract data from the rest of the line
             string itemInfo;
             while (getline(iss, itemInfo, ',')) 
             {
                 itemData.push_back(itemInfo);
             }
 
-            
-            items.push_back(createItem(itemType, itemData));        //Create and add the item to the menu based on the type
+            items.push_back(createItem(itemType, itemData));    //Create and add the item to the menu based on the type
         }
         catch (const exception& e) 
         {
@@ -58,9 +54,8 @@ void Menu::loadMenuFromFile(const string& filePath)
     file.close();
 }
 
-
-string Menu::toString() const       //Function to display the menu
- {
+string Menu::toString() const //Function to display the menu
+{
     string result;
     int itemCount = 1;
 
@@ -75,7 +70,7 @@ string Menu::toString() const       //Function to display the menu
             result += "(" + to_string(itemCount) + ") " + appetiser->getName() + ": \x9C" + formattedPrice.str();
             result += ", " + to_string(appetiser->getCalories()) + " cal";
 
-            if (appetiser->shareable)             //Display shareable and two-for-one information
+            if (appetiser->shareable) 
             {
                 result += " (shareable";
                 if (appetiser->twoForOne) 
@@ -103,12 +98,10 @@ string Menu::toString() const       //Function to display the menu
             formattedPrice << fixed << setprecision(2) << mainCourse->getPrice();
 
             result += "(" + to_string(itemCount) + ") " + mainCourse->getName() + ": \x9C" + formattedPrice.str();
-
             result += ", " + to_string(mainCourse->getCalories()) + " cal\n";
             itemCount++;
         }
     }
-
 
     result += "-----Beverages-----\n";
     for (const shared_ptr<Item>& item : items) 
@@ -125,10 +118,9 @@ string Menu::toString() const       //Function to display the menu
             formattedAbv << fixed << setprecision(2) << beverage->abv;
 
             result += "(" + to_string(itemCount) + ") " + beverage->getName() + ": \x9C" + formattedPrice.str() + ", " + to_string(beverage->getCalories()) + " cal ";
-
             result += "(" + formattedVolume.str() + "ml";
 
-            if (beverage->isAlcoholic()) 
+            if (beverage->isAlcoholic())
             {
                 result += ", " + formattedAbv.str() + "% abv";
             }
@@ -137,23 +129,13 @@ string Menu::toString() const       //Function to display the menu
             itemCount++;
         }
     }
-
-
-
-
-
     return result;
 }
 
-
-
-
-// Helper function to create an item based on type character
-shared_ptr<Item> Menu::createItem(char itemType, const vector<string>& itemData)
+shared_ptr<Item> Menu::createItem(char itemType, const vector<string>& itemData) //Helper function to create an item based on type character
 {
     try 
     {
-
         switch (itemType) 
         {
         case 'a':
@@ -177,7 +159,7 @@ shared_ptr<Item> Menu::createItem(char itemType, const vector<string>& itemData)
             }
             break;
         case 'b':
-            if (itemData.size() == 8) 
+            if (itemData.size() == 8)
             {
                 string name = itemData[1];
                 double price = (itemData[2].empty() ? 0.0 : stod(itemData[2]));
@@ -185,7 +167,6 @@ shared_ptr<Item> Menu::createItem(char itemType, const vector<string>& itemData)
                 double abv = (itemData[7].empty() ? 0.0 : stod(itemData[7]));
                 int volume = (itemData[6].empty() ? 0 : stoi(itemData[6]));
                 return make_shared<Beverage>(name, calories, price, abv, volume);
-                
             }
             break;
         default:
@@ -193,29 +174,25 @@ shared_ptr<Item> Menu::createItem(char itemType, const vector<string>& itemData)
             return nullptr;
         }
     }
-    catch (const exception& e)
+    catch (const exception& e) 
     {
         cerr << "Error while creating item: " << e.what() << endl;
     }
 
-    // If execution reaches here, it means the input was invalid
-    cerr << "Error: Invalid data for item type " << itemType << endl;
+    cerr << "Error: Invalid data for item type " << itemType << endl;    //If execution reaches here, it means the input was invalid
     return nullptr;
-
 }
 
-
-size_t Menu::size() const 
+size_t Menu::size() const //Function to get the size of the menu
 {
     return items.size();
 }
 
-shared_ptr<Item> Menu::getMenuItem(int itemNumber) const 
+shared_ptr<Item> Menu::getMenuItem(int itemNumber) const //Function to get a specific item from the menu based on item number
 {
     if (itemNumber > 0 && static_cast<size_t>(itemNumber) <= items.size()) 
     {
-        // Return a shared_ptr owning the item
-        return items[itemNumber - 1];
+        return items[itemNumber - 1];        //Return a shared_ptr owning the item
     }
     return nullptr;
 }
